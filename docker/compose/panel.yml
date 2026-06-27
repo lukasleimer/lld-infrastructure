@@ -25,9 +25,9 @@
 services:
   panel:
     # Build aus lokalem Django-Repository
-    # Dockerfile erwartet unter: ../lld-panel/Dockerfile
+    # Dockerfile erwartet unter: ../../lld-panel/Dockerfile
     build:
-      context: ../lld-panel
+    context: ../../lld-panel
     
     # Container-Identifikation
     container_name: lld-panel

@@ -29,6 +29,12 @@ services:
     build:
       context: ../../../lld-panel
     
+    # Environment Variables
+    # Laden aus der Template-Datei (docker/env/panel.env)
+    # Muss existieren: cp docker/env/panel.env.example docker/env/panel.env
+    env_file:
+      - ../env/panel.env
+    
     # Container-Identifikation
     container_name: lld-panel
     

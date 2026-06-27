@@ -24,8 +24,6 @@
 # - Domain-Routing (Sprint 5)
 # - Build-Prozess (später)
 
-version: '3.9'
-
 services:
   website:
     # Leichtgewichtiges Nginx für statische Dateien
@@ -62,9 +60,3 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-
-# Docker-Netzwerk
-# Wird in der zentralen docker-compose.yml definiert
-networks:
-  lld:
-    external: false

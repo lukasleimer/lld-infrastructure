@@ -20,8 +20,6 @@
 # - Nginx (Reverse Proxy)
 # - Website (Test-Service)
 
-version: '3.9'
-
 # Inkludiere alle Service-Definitionen
 include:
   - ./docker/compose/database.yml

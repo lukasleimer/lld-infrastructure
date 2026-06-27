@@ -22,8 +22,6 @@
 # - Replikation (Zukunft)
 # - Performance-Tuning (Zukunft)
 
-version: '3.9'
-
 services:
   postgres:
     # Offizielle PostgreSQL-Image
@@ -62,15 +60,3 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-
-# Docker-Netzwerk
-# Wird in der zentralen docker-compose.yml definiert
-networks:
-  lld:
-    external: false
-
-# Volumes
-# Werden in der zentralen docker-compose.yml definiert
-volumes:
-  lld_postgres_data:
-    external: true

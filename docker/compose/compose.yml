@@ -1,24 +1,25 @@
-# Docker Compose — Zentrale Basis der LLD-Infrastruktur
+# Docker Compose — Basis-Template (DEPRECATED)
 #
-# Diese Datei definiert gemeinsame Ressourcen für alle Services:
-# - Docker-Netzwerk (lld)
-# - Gemeinsame Volumes
-# - Basis-Konfiguration
+# ⚠️ DEPRECATED: Diese Datei wird nicht mehr verwendet.
+#
+# Die zentrale Orchestrierung erfolgt über:
+#   → docker-compose.yml (ROOT)
+#
+# Das ROOT docker-compose.yml ist die Single Source of Truth für:
+# - Alle Include-Direktiven
+# - Alle Netzwerk-Definitionen
+# - Alle Volume-Definitionen
+#
+# Service-Definitionen befinden sich in:
+# - docker/compose/database.yml (PostgreSQL)
+# - docker/compose/proxy.yml (Nginx)
+# - docker/compose/website.yml (Website)
+# - docker/compose/panel.yml (Panel - später)
+# - docker/compose/monitoring.yml (Monitoring - später)
 #
 # Verwendung:
-# Diese Datei wird als Grundlage verwendet. Weitere Services werden
-# in separaten Dateien definiert und später mit Includes verknüpft.
-
-version: '3.9'
-
-# Gemeinsame Netzwerk-Definition
-# Alle Services verbinden sich mit diesem Netzwerk
-networks:
-  lld:
-    name: lld
-    driver: bridge
-
-# Gemeinsame Volumes (falls benötigt)
-volumes:
-  # Volumes werden pro Service in deren Dateien definiert
-  # Hier Platzhalter für globale Volumes
+#   docker compose up -d    # Startet alle Services
+#   docker compose config   # Validiert die Konfiguration
+#   docker compose logs -f  # Zeigt alle Logs
+#
+# Diese Datei kann gelöscht werden.

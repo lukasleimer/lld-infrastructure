@@ -12,7 +12,5 @@
 #
 # Status: Noch nicht implementiert (Sprint 8 Monitoring & Logging)
 
-version: '3.9'
-
 services:
   # Monitoring-Services werden hier definiert

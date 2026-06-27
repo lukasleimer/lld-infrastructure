@@ -13,7 +13,5 @@
 #
 # Status: Noch nicht implementiert (Sprint 2 Vorbereitung)
 
-version: '3.9'
-
 services:
   # Panel-Anwendung wird hier definiert

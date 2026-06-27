@@ -27,8 +27,6 @@
 # - Virtuelle Hosts (Sprint 5)
 # - Proxy-Pass-Konfiguration (Sprint 5)
 
-version: '3.9'
-
 services:
   nginx:
     # Offizielle Nginx-Image
@@ -74,15 +72,3 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-
-# Docker-Netzwerk
-# Wird in der zentralen docker-compose.yml definiert
-networks:
-  lld:
-    external: false
-
-# Volumes
-# Werden in der zentralen docker-compose.yml definiert
-volumes:
-  lld_nginx_logs:
-    external: true

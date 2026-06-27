@@ -25,6 +25,7 @@ include:
   - ./docker/compose/database.yml
   - ./docker/compose/proxy.yml
   - ./docker/compose/website.yml
+  - ./docker/compose/panel.yml
 
 # Zentrale Netzwerk-Definition
 # Alle Services sind in diesem Netzwerk verbunden

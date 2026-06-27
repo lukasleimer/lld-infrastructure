@@ -1,17 +1,42 @@
 # Docker Compose — LLD Admin Panel
 #
-# Zentrales Admin-Panel und Verwaltungsschnittstelle der Plattform.
+# Django Admin Panel für die LLD-Infrastruktur.
 #
-# Diese Django-Anwendung wird hinter dem Reverse Proxy gehostet.
-# Domain: panel.lukasleimer.dev
+# Diese Anwendung wird hinter dem Nginx Reverse Proxy gehostet.
+# Sie ist nur über das interne Docker-Netzwerk erreichbar.
 #
-# Zukünftige Funktionen:
-# - Domainverwaltung
-# - Kundenverwaltung
-# - Deployment-Verwaltung
-# - Monitoring-Dashboard
+# Sprint 4.2.1: Minimale Service-Definition
+# - Build aus lokalem Repository: ../lld-panel
+# - Internt in lld-Netzwerk
+# - Noch keine Ports, DB, Env-Vars, oder Konfiguration
 #
-# Status: Noch nicht implementiert (Sprint 2 Vorbereitung)
+# Zukünftige Integration (Sprint 5+):
+# - PostgreSQL-Verbindung
+# - Reverse Proxy Routing (Domain: panel.lukasleimer.dev)
+# - SSL/HTTPS Konfiguration
+# - Environment-Variablen & Secrets
+# - Healthcheck
+# - Volumes für Daten
+#
+# Abhängigkeiten:
+# - Docker Network 'lld' (zentral definiert in root docker-compose.yml)
+# - Lokales Repository: ../lld-panel mit Dockerfile
 
 services:
-  # Panel-Anwendung wird hier definiert
+  panel:
+    # Build aus lokalem Django-Repository
+    # Dockerfile erwartet unter: ../lld-panel/Dockerfile
+    build:
+      context: ../lld-panel
+    
+    # Container-Identifikation
+    container_name: lld-panel
+    
+    # Netzwerk-Membership
+    # Intern im lld-Netzwerk (nicht öffentlich)
+    networks:
+      - lld
+    
+    # Automatischer Neustart bei Fehler
+    # unless-stopped: Startet neu außer wenn manuell gestoppt
+    restart: unless-stopped

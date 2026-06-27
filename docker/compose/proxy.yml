@@ -1,0 +1,88 @@
+# Docker Compose — Reverse Proxy (Nginx)
+#
+# Der Reverse Proxy ist der einzige öffentliche Einstiegspunkt der Infrastruktur.
+#
+# Aufgaben:
+# - Entgegennahme eingehender HTTP-Requests
+# - Domain-basiertes Routing (später)
+# - SSL-Terminierung (später)
+# - Load Balancing (später)
+#
+# Dieser Service ist:
+# - Öffentlich erreichbar (Port 80)
+# - Zentral für die Plattform
+# - Unabhängig von anderen Services (kein depends_on)
+#
+# Konfiguration:
+# - Image: Offizielle Nginx-Version (stabil)
+# - Persistenz: Config und Logs in Volumes
+# - Netzwerk: Docker-Netzwerk 'lld' (intern)
+# - Ports: 80 (HTTP; HTTPS später in Sprint 5)
+# - Healthcheck: HTTP-Request zu Nginx
+#
+# Nicht enthalten (später):
+# - SSL/HTTPS (Sprint 5)
+# - Let's Encrypt (Sprint 5)
+# - Domain-Routing (Sprint 5)
+# - Virtuelle Hosts (Sprint 5)
+# - Proxy-Pass-Konfiguration (Sprint 5)
+
+version: '3.9'
+
+services:
+  nginx:
+    # Offizielle Nginx-Image
+    # Stable Version (1.26), nicht 'latest'
+    # Alpine für kleinere Größe und schnellere Deploys
+    image: nginx:1.26-alpine
+    
+    # Eindeutiger Container-Name nach Naming-Standard
+    container_name: lld-nginx
+    
+    # Netzwerk-Zugehörigkeit
+    # Services kommunizieren intern über Servicenamen ('nginx')
+    # Nicht öffentlich erreichbar aus Docker-Netzwerk
+    networks:
+      - lld
+    
+    # Port-Mappings
+    # Nur Port 80 (HTTP) wird öffentlich veröffentlicht
+    # Port 443 (HTTPS) wird später ergänzt (Sprint 5)
+    # Nicht: 3000, 8080, etc. - nur HTTP(S)
+    ports:
+      - "80:80"
+    
+    # Persistente Volumes
+    # Config-Volume: Nginx-Konfiguration aus Repository
+    # Logs-Volume: Accesss/Error-Logs (optional, für Zukunft)
+    volumes:
+      # Konfiguration aus Repository einbinden
+      - ./../../docker/nginx:/etc/nginx/conf.d
+      # Logs-Verzeichnis
+      - lld_nginx_logs:/var/log/nginx
+    
+    # Automatischer Neustart bei Fehler
+    # "unless-stopped": Startet neu außer wenn manuell gestoppt
+    restart: unless-stopped
+    
+    # Healthcheck - Prüft ob Nginx erreichbar ist
+    # Sendet HTTP-Request zum Nginx selbst
+    # Container wird als "unhealthy" gekennzeichnet wenn Check fehlschlägt
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# Docker-Netzwerk
+# Wird in der zentralen docker-compose.yml definiert
+networks:
+  lld:
+    external: false
+
+# Volumes
+# Werden in der zentralen docker-compose.yml definiert
+volumes:
+  lld_nginx_logs:
+    external: true

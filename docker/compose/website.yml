@@ -1,0 +1,70 @@
+# Docker Compose — LLD Website Service
+#
+# Öffentliche Website der LLD-Plattform.
+# Domain: lukasleimer.dev (später in Sprint 5)
+#
+# Dieser Service ist ein Platzhalter für die echte Website-Anwendung.
+# Er wird später durch das Docker-Image der echten lld-website ersetzt.
+#
+# Zweck:
+# - Testing der Infrastruktur (Nginx, Netzwerk, Reverse Proxy)
+# - End-to-End-Verifikation des Request-Flows
+# - Basis für zukünftige Website-Integration
+#
+# Konfiguration:
+# - Image: Leichtgewichtiges Nginx (statische Dateien)
+# - Netzwerk: Docker-Netzwerk 'lld' (intern)
+# - Ports: Keine öffentlich (nur über Reverse Proxy)
+# - Volume: HTML-Testseite
+# - Healthcheck: HTTP-Request
+#
+# Nicht enthalten (später):
+# - Astro oder andere Frameworks
+# - SSL/HTTPS (Sprint 5)
+# - Domain-Routing (Sprint 5)
+# - Build-Prozess (später)
+
+version: '3.9'
+
+services:
+  website:
+    # Leichtgewichtiges Nginx für statische Dateien
+    # Alpine-Variante für kleine Größe
+    image: nginx:1.26-alpine
+    
+    # Eindeutiger Container-Name
+    container_name: lld-website
+    
+    # Netzwerk-Zugehörigkeit
+    # Intern im lld-Netzwerk
+    # Nicht direkt von außen erreichbar
+    networks:
+      - lld
+    
+    # Volumes
+    # HTML-Testseite wird eingebunden
+    # Nginx konfiguration für Testseite
+    volumes:
+      # Einfache Test-HTML
+      - ./../../docker/website/html:/usr/share/nginx/html:ro
+      # Nginx-Konfiguration für Website
+      - ./../../docker/website/default.conf:/etc/nginx/conf.d/default.conf:ro
+    
+    # Automatischer Neustart
+    restart: unless-stopped
+    
+    # Healthcheck - Prüft ob Website erreichbar ist
+    # Sendet HTTP-Request zur lokalen Website
+    # Container wird unhealthy bei Fehler
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# Docker-Netzwerk
+# Wird in der zentralen docker-compose.yml definiert
+networks:
+  lld:
+    external: false

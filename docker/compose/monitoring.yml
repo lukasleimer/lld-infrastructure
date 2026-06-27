@@ -1,0 +1,18 @@
+# Docker Compose — Monitoring und Observability
+#
+# Services für Überwachung, Logging und Observability der Plattform.
+#
+# Zukünftige Services:
+# - Prometheus (Metriken-Sammlung)
+# - Grafana (Visualisierung)
+# - Loki oder ELK-Stack (Log-Aggregation)
+# - Alerting
+#
+# Diese Services sind optional und werden später hinzugefügt.
+#
+# Status: Noch nicht implementiert (Sprint 8 Monitoring & Logging)
+
+version: '3.9'
+
+services:
+  # Monitoring-Services werden hier definiert

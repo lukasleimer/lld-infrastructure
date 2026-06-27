@@ -1,0 +1,19 @@
+# Docker Compose — LLD Admin Panel
+#
+# Zentrales Admin-Panel und Verwaltungsschnittstelle der Plattform.
+#
+# Diese Django-Anwendung wird hinter dem Reverse Proxy gehostet.
+# Domain: panel.lukasleimer.dev
+#
+# Zukünftige Funktionen:
+# - Domainverwaltung
+# - Kundenverwaltung
+# - Deployment-Verwaltung
+# - Monitoring-Dashboard
+#
+# Status: Noch nicht implementiert (Sprint 2 Vorbereitung)
+
+version: '3.9'
+
+services:
+  # Panel-Anwendung wird hier definiert

@@ -1,0 +1,47 @@
+# Docker Compose — LLD Infrastructure
+#
+# Zentrale Orchestrierung aller Services der LLD-Infrastruktur.
+#
+# Diese Datei ist der Einstiegspunkt für die komplette Plattform.
+# Sie inkludiert alle modularen Service-Definitionen.
+#
+# Verwendung:
+#   docker compose up -d      # Alle Services starten
+#   docker compose down        # Alle Services stoppen
+#   docker compose logs -f     # Logs anzeigen
+#
+# Struktur:
+# - Zentrale Netzwerk-Definition (lld)
+# - Modular organisierte Services
+# - Gemeinsame Volumes
+#
+# Services:
+# - PostgreSQL (Datenbank)
+# - Nginx (Reverse Proxy)
+# - Website (Test-Service)
+
+version: '3.9'
+
+# Inkludiere alle Service-Definitionen
+include:
+  - ./docker/compose/database.yml
+  - ./docker/compose/proxy.yml
+  - ./docker/compose/website.yml
+
+# Zentrale Netzwerk-Definition
+# Alle Services sind in diesem Netzwerk verbunden
+networks:
+  lld:
+    name: lld
+    driver: bridge
+
+# Zentrale Volumes
+# Werden von Services referenziert
+volumes:
+  lld_postgres_data:
+    name: lld_postgres_data
+    driver: local
+  
+  lld_nginx_logs:
+    name: lld_nginx_logs
+    driver: local

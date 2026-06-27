@@ -1,0 +1,76 @@
+# Docker Compose — PostgreSQL Datenbank
+#
+# PostgreSQL-Datenbankserver für alle Anwendungen der Plattform.
+#
+# Services mit dieser Datenbank:
+# - Panel
+# - Website
+# - Kundenwebseiten (zukünftig)
+#
+# Dieser Service definiert den Standard für Datenbankpersistenz.
+#
+# Konfiguration:
+# - Image: Offizielle PostgreSQL-Version (stabil, nicht latest)
+# - Persistenz: Benanntes Volume (lld_postgres_data)
+# - Netzwerk: Docker-Netzwerk 'lld' (intern)
+# - Umgebung: Aus .env-Datei geladen
+# - Healthcheck: Regelmäßige Verfügbarkeitsprüfung
+#
+# Nicht enthalten (später):
+# - Init-Skripte (Sprint 4+)
+# - Backups (Sprint 7)
+# - Replikation (Zukunft)
+# - Performance-Tuning (Zukunft)
+
+version: '3.9'
+
+services:
+  postgres:
+    # Offizielle PostgreSQL-Image
+    # Stable Major-Version (16), nicht 'latest'
+    image: postgres:16.3-alpine
+    
+    # Eindeutiger Container-Name nach Naming-Standard
+    container_name: lld-postgres
+    
+    # Netzwerk-Zugehörigkeit
+    # Services kommunizieren intern über Servicenamen ('postgres')
+    # Nicht öffentlich erreichbar
+    networks:
+      - lld
+    
+    # Umgebungsvariablen aus .env-Datei
+    # Geheime Variablen (POSTGRES_PASSWORD) werden nicht in Datei gespeichert
+    env_file:
+      - ../../.env
+    
+    # Persistente Daten in benanntem Volume
+    # Container ist ephemeral, Daten bleiben erhalten
+    volumes:
+      - lld_postgres_data:/var/lib/postgresql/data
+    
+    # Automatischer Neustart bei Fehler
+    # "unless-stopped": Startet neu außer wenn manuell gestoppt
+    restart: unless-stopped
+    
+    # Healthcheck - Prüft ob Datenbank verfügbar ist
+    # Container wird als "unhealthy" gekennzeichnet wenn Check fehlschlägt
+    # Docker kann dann reagieren (z.B. Neustart)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+# Docker-Netzwerk
+# Wird in der zentralen docker-compose.yml definiert
+networks:
+  lld:
+    external: false
+
+# Volumes
+# Werden in der zentralen docker-compose.yml definiert
+volumes:
+  lld_postgres_data:
+    external: true
